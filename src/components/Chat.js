@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { db } from '../firebase-config';
-import { collection, query, where, onSnapshot, orderBy, addDoc } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, addDoc } from 'firebase/firestore';
 
-const Chat = ({ matchId }) => {
+const Chat = () => {
+  const { matchId } = useParams(); // Using useParams to get matchId from the route.
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
-  // Pobieranie istniejących wiadomości
   useEffect(() => {
     if (matchId) {
       const messagesRef = collection(db, "chats", matchId, "messages");
@@ -20,11 +21,10 @@ const Chat = ({ matchId }) => {
         setMessages(loadedMessages);
       });
 
-      return () => unsubscribe();
+      return () => unsubscribe(); // Clean up on unmount
     }
   }, [matchId]);
 
-  // Funkcja do wysyłania nowych wiadomości
   const sendMessage = async () => {
     if (newMessage.trim() !== "" && matchId) {
       const messagesRef = collection(db, "chats", matchId, "messages");

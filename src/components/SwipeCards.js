@@ -12,8 +12,9 @@ const SwipeCards = () => {
       const querySnapshot = await getDocs(collection(db, "users"));
       const profileData = [];
       querySnapshot.forEach((doc) => {
+        // Exclude the current user from the list of profiles
         if (doc.id !== auth.currentUser?.uid) {
-          profileData.push({ ...doc.data(), id: doc.id });
+          profileData.push({...doc.data(), id: doc.id}); // Make sure you are capturing the 'displayName' from document
         }
       });
       setProfiles(profileData);
@@ -44,7 +45,7 @@ const SwipeCards = () => {
     <div>
       {currentIndex < profiles.length ? (
         <div>
-          <h2>{profiles[currentIndex].name}</h2>
+          <h2>{profiles[currentIndex].displayName}</h2> {/* Displaying the displayName */}
           <p>{profiles[currentIndex].description}</p>
           <button onClick={() => handleSwipe('left')}>Nie lubię</button>
           <button onClick={() => handleSwipe('right')}>Lubię</button>
